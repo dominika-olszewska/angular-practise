@@ -1,6 +1,14 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { FormControl, FormGroup, FormGroupDirective, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormGroupDirective,
+  FormsModule,
+  NgForm,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,13 +18,23 @@ import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Observable, map, startWith } from 'rxjs';
-import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
+import {
+  MatAutocompleteSelectedEvent,
+  MatAutocompleteModule,
+} from '@angular/material/autocomplete';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+  isErrorState(
+    control: FormControl | null,
+    form: FormGroupDirective | NgForm | null
+  ): boolean {
     const isSubmitted = form && form.submitted;
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+    return !!(
+      control &&
+      control.invalid &&
+      (control.dirty || control.touched || isSubmitted)
+    );
   }
 }
 
@@ -24,50 +42,53 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   selector: 'app-form',
   standalone: true,
   imports: [
-    CommonModule, 
+    CommonModule,
     FormsModule,
-    ReactiveFormsModule, 
-    MatFormFieldModule, 
-    MatInputModule, 
-    MatSelectModule, 
-    MatButtonModule, 
-    MatChipsModule, 
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatChipsModule,
     MatIconModule,
     MatAutocompleteModule,
-    AsyncPipe
+    AsyncPipe,
   ],
   templateUrl: './form.component.html',
-  styleUrl: './form.component.scss'
+  styleUrl: './form.component.scss',
 })
-export class FormComponent  {
+export class FormComponent {
   public matcher = new MyErrorStateMatcher();
   public techStacks: string[] = ['Angular'];
   public allTechStacks: string[] = ['Angular', 'Ngrx', 'Rxjs', 'Jest', 'Scss'];
   public filteredTechStacks$: Observable<string[]>;
-  public separatorKeysCodes=[COMMA, ENTER];
+  public separatorKeysCodes = [COMMA, ENTER];
   public registerForm = new FormGroup({
     firstNameControl: new FormControl('', [Validators.required]),
     lastNameControl: new FormControl('', [Validators.required]),
-    emailControl: new FormControl('',[Validators.required, Validators.email]),
+    emailControl: new FormControl('', [Validators.required, Validators.email]),
     techStacksControl: new FormControl(''),
-  })
+  });
 
   @ViewChild('techStacksInput') techStacksInput!: ElementRef<HTMLInputElement>;
 
-
   public get emailFormControl(): FormControl {
-    return this.registerForm.get('emailControl') as FormControl
+    return this.registerForm.get('emailControl') as FormControl;
   }
 
   public get techStacksFormControl(): FormControl {
-    return this.registerForm.get('techStacksControl') as FormControl
+    return this.registerForm.get('techStacksControl') as FormControl;
   }
 
-  constructor(private announcer: LiveAnnouncer){
-    this.filteredTechStacks$= this.techStacksFormControl?.valueChanges.pipe(
+  constructor(private announcer: LiveAnnouncer) {
+    this.filteredTechStacks$ = this.techStacksFormControl?.valueChanges.pipe(
       startWith(null),
-      map(()=> this.allTechStacks.filter((techStack: string) => !this.techStacks?.find(ts=> ts===techStack)))
-    ) 
+      map(() =>
+        this.allTechStacks.filter(
+          (techStack: string) => !this.techStacks?.find(ts => ts === techStack)
+        )
+      )
+    );
   }
 
   public onSubmit(): void {
@@ -102,6 +123,4 @@ export class FormComponent  {
       this.techStacksFormControl.setValue(null);
     }
   }
-
-
 }
