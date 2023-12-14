@@ -1,0 +1,50 @@
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+    <mat-form-field>
+        <mat-label>First name</mat-label>
+        <input matInput formControlName="firstNameControl" required>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Last name</mat-label>
+        <input matInput formControlName="lastNameControl" required>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="emailControl" required [errorStateMatcher]="matcher">
+
+        @if(emailFormControl?.hasError('email') && !emailFormControl?.hasError('required')) {
+            <mat-error>Please enter a valid email address</mat-error>
+        }
+
+        @if(emailFormControl?.hasError('required')) {
+            <mat-error>Email is <strong>required</strong></mat-error>
+        }
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Tech stack</mat-label>
+        <mat-chip-grid  #chipGrid aria-label="Tech stack selection">
+            @for(techStack of techStacks; track techStack ) {
+
+                <mat-chip-row (removed)="remove(techStack)">{{techStack}}
+                    <button matChipRemove [attr.aria-label]="'remove ' + techStack">
+                        <mat-icon>cancel</mat-icon>
+                      </button></mat-chip-row>
+            }
+
+        </mat-chip-grid>
+        <input placeholder="New Tech Stack..." #techStacksInput  [matChipInputFor]="chipGrid" [formControl]="techStacksFormControl" [matAutocomplete]="auto"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+        (matChipInputTokenEnd)="add($event)">
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+            @for (ts of filteredTechStacks$ | async; track ts) {
+              <mat-option [value]="ts">{{ts}}</mat-option>
+            }
+          </mat-autocomplete>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" [disabled]="!registerForm.valid">Submit</button>
+    
+</form>
