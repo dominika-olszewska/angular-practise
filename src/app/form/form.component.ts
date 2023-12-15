@@ -1,4 +1,11 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  ViewChild,
+  WritableSignal,
+  effect,
+  signal,
+} from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import {
   FormControl,
@@ -23,9 +30,10 @@ import {
   MatAutocompleteModule,
 } from '@angular/material/autocomplete';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { isEqual } from 'lodash';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(
+  public isErrorState(
     control: FormControl | null,
     form: FormGroupDirective | NgForm | null
   ): boolean {
@@ -68,6 +76,15 @@ export class FormComponent {
     lastNameControl: new FormControl('', [Validators.required]),
     emailControl: new FormControl('', [Validators.required, Validators.email]),
     techStacksControl: new FormControl(''),
+    // TODO: add form group in form  group
+    // TODO: add input with debounce
+    // TODO: add custom control
+    // TODO: Read about Web Components
+    // TODO: Add backend
+  });
+
+  private formValue: WritableSignal<FormGroup | null> = signal(null, {
+    equal: isEqual,
   });
 
   @ViewChild('techStacksInput') techStacksInput!: ElementRef<HTMLInputElement>;
@@ -89,9 +106,17 @@ export class FormComponent {
         )
       )
     );
+
+    effect(() => {
+      console.log(`The form value is: ${this.formValue()})`);
+    });
   }
 
   public onSubmit(): void {
+    this.techStacksFormControl.setValue(this.techStacks);
+    this.formValue.set(this.registerForm.value as FormGroup);
+    console.log('this.formValue', this.formValue());
+
     console.log('form value:', this.registerForm.value);
   }
 

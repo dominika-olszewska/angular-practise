@@ -19,4 +19,6 @@ describe('FormComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+  // TODO: add tests
+  // TODO: add Cypress tests
 });

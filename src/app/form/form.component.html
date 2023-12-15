@@ -1,4 +1,5 @@
 <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+  <!-- TODO: add deffered view -->
   <mat-form-field>
     <mat-label>First name</mat-label>
     <input matInput formControlName="firstNameControl" required />
@@ -19,13 +20,13 @@
       [errorStateMatcher]="matcher" />
 
     @if (
-      emailFormControl?.hasError('email') &&
-      !emailFormControl?.hasError('required')
+      emailFormControl.hasError('email') &&
+      !emailFormControl.hasError('required')
     ) {
       <mat-error>Please enter a valid email address</mat-error>
     }
 
-    @if (emailFormControl?.hasError('required')) {
+    @if (emailFormControl.hasError('required')) {
       <mat-error>Email is <strong>required</strong></mat-error>
     }
   </mat-form-field>
